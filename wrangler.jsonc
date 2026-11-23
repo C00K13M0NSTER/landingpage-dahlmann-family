@@ -1,0 +1,13 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	// Must match the Worker name in the Cloudflare dashboard, otherwise Workers Builds fails.
+	"name": "landingpage-dahlmann-family",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-11-19",
+	// Every domain listed here is served by this Worker (www.* redirects to the apex domain).
+	// Note: wrangler replaces existing A/AAAA/CNAME records of these hostnames on deploy.
+	"routes": [
+		{ "pattern": "dahlmann.family", "custom_domain": true },
+		{ "pattern": "www.dahlmann.family", "custom_domain": true }
+	]
+}
