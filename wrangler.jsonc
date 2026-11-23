@@ -5,9 +5,10 @@
 	"main": "src/index.ts",
 	"compatibility_date": "2026-11-19",
 	// Every domain listed here is served by this Worker (www.* redirects to the apex domain).
-	// Note: wrangler replaces existing A/AAAA/CNAME records of these hostnames on deploy.
+	// custom_domain requires a hostname without A/AAAA/CNAME record; hostnames with an existing proxied record use a route.
 	"routes": [
-		{ "pattern": "dahlmann.family", "custom_domain": true },
+		// The proxied CNAME left over from the former Pages project must stay, the route depends on it.
+		{ "pattern": "dahlmann.family/*", "zone_name": "dahlmann.family" },
 		{ "pattern": "www.dahlmann.family", "custom_domain": true }
 	]
 }

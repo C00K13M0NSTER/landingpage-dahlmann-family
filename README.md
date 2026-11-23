@@ -21,11 +21,15 @@ Moderne Wartungsseite für **dahlmann.family** – als generischer Cloudflare Wo
    { "pattern": "example.com", "custom_domain": true },
    { "pattern": "www.example.com", "custom_domain": true }
    ```
+   `custom_domain` funktioniert nur, wenn der Hostname noch keinen A/AAAA/CNAME-Eintrag hat. Hängt die Domain z. B. noch an einem Pages-Projekt (proxied CNAME), stattdessen eine Route nutzen und den Eintrag stehen lassen:
+   ```jsonc
+   { "pattern": "example.com/*", "zone_name": "example.com" }
+   ```
 3. Optional Texte, Sprache, Akzentfarbe oder Kontakt-E-Mail in [src/sites.ts](src/sites.ts) überschreiben:
    ```ts
    "example.com": { badge: "Coming soon", message: "Something new is on its way.", lang: "en", accent: "#0ea5e9" },
    ```
-4. Push auf `main`. Cloudflare legt DNS-Einträge und Zertifikate selbst an. Bestehende A/AAAA/CNAME-Einträge dieser Hostnamen werden dabei ersetzt.
+4. Push auf `main`. Für Custom Domains legt Cloudflare DNS-Einträge und Zertifikate selbst an.
 
 ## Entwicklung
 
