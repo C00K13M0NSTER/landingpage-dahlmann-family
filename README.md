@@ -1,9 +1,9 @@
 # landingpage-dahlmann-family
 
-Moderne Wartungsseite für **dahlmann.family** – als generischer Cloudflare Worker, der beliebig viele Domains bedienen kann.
+Schlichte, typografische Wartungsseite für **dahlmann.family** – als generischer Cloudflare Worker, der beliebig viele Domains bedienen kann.
 
-- Ein Worker, mehrere Domains: Die Seite wird anhand des Hostnamens gerendert. Ohne weitere Konfiguration zeigt sie einfach den Domainnamen.
-- Keine externen Ressourcen (keine Fonts, Skripte oder Tracker), ca. 3 KB gzip.
+- Ein Worker, mehrere Domains: Die Seite wird anhand des Hostnamens gerendert. Ohne weitere Konfiguration steht oben einfach der Domainname.
+- Nur Systemschriften (Serif + Mono), keine externen Ressourcen (keine Webfonts, Skripte oder Tracker).
 - Dark/Light Mode, responsive, respektiert `prefers-reduced-motion`.
 - `www.` leitet per 301 auf die Hauptdomain um.
 
@@ -25,9 +25,9 @@ Moderne Wartungsseite für **dahlmann.family** – als generischer Cloudflare Wo
    ```jsonc
    { "pattern": "example.com/*", "zone_name": "example.com" }
    ```
-3. Optional Texte, Sprache, Akzentfarbe oder Kontakt-E-Mail in [src/sites.ts](src/sites.ts) überschreiben:
+3. Optional Status, Überschrift (`*kursiv*` möglich), Text, Sprache, Akzentfarbe oder Kontakt-E-Mail in [src/sites.ts](src/sites.ts) überschreiben:
    ```ts
-   "example.com": { badge: "Coming soon", message: "Something new is on its way.", lang: "en", accent: "#0ea5e9" },
+   "example.com": { status: "Maintenance", headline: "Something new is *coming.*", message: "Check back soon.", lang: "en" },
    ```
 4. Push auf `main`. Für Custom Domains legt Cloudflare DNS-Einträge und Zertifikate selbst an.
 

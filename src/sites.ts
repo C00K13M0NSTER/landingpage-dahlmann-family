@@ -1,26 +1,28 @@
 export interface Site {
-	/** Headline and page title. */
+	/** Shown top left and in the page title. */
 	name: string;
-	/** Status pill above the headline. */
-	badge: string;
+	/** Status label top right. */
+	status: string;
+	/** Text wrapped in *asterisks* is set in italics. */
+	headline: string;
 	message: string;
-	/** Rendered as mailto button when set. */
+	/** Rendered as mailto link when set. */
 	email?: string;
-	/** Base color of all gradients; the other hues are derived from it. */
 	accent: `#${string}`;
 	lang: string;
 }
 
 const DEFAULTS: Omit<Site, "name"> = {
-	badge: "Wartungsarbeiten",
-	message: "Hier wird gerade gebaut. Schau bald wieder vorbei.",
-	accent: "#8b5cf6",
+	status: "Wartungsarbeiten",
+	headline: "Hier wird gerade *gebaut.*",
+	message: "Schau bald wieder vorbei.",
+	accent: "#c8471c",
 	lang: "de",
 };
 
-// Per-domain overrides. Domains without an entry use DEFAULTS and show their hostname as headline.
+// Per-domain overrides. Domains without an entry use DEFAULTS and show their hostname.
 const SITES: Record<string, Partial<Site>> = {
-	// "example.com": { badge: "Coming soon", message: "Something new is on its way.", lang: "en", accent: "#0ea5e9" },
+	// "example.com": { status: "Maintenance", headline: "Something new is *coming.*", message: "Check back soon.", lang: "en" },
 };
 
 export function resolveSite(hostname: string): Site {

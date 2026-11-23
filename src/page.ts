@@ -2,45 +2,31 @@ import type { Site } from "./sites";
 
 const CSS = `
 *,*::before,*::after{box-sizing:border-box}
-:root{--bg:#09090b;--fg:#fafafa;--fg-fade:rgb(250 250 250/.55);--muted:#a1a1aa;--line:rgb(255 255 255/.08);--glass:rgb(255 255 255/.04);--glow:.4;--a2:var(--accent);--a3:var(--accent);color-scheme:dark}
-@supports (color:oklch(from red l c h)){:root{--a2:oklch(from var(--accent) l c calc(h + 70));--a3:oklch(from var(--accent) l c calc(h - 70))}}
-@media (prefers-color-scheme:light){:root{--bg:#fafafa;--fg:#09090b;--fg-fade:rgb(9 9 11/.6);--muted:#52525b;--line:rgb(0 0 0/.07);--glass:rgb(255 255 255/.6);--glow:.28;color-scheme:light}}
-html{background:var(--bg);color:var(--fg)}
-body{margin:0;min-height:100vh;min-height:100svh;display:grid;grid-template-rows:1fr auto;font:400 1rem/1.6 ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-.bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
-.bg::before{content:"";position:absolute;inset:0;background:linear-gradient(var(--line) 1px,transparent 1px) 0 0/56px 56px,linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/56px 56px;-webkit-mask:radial-gradient(ellipse 70% 60% at 50% 45%,#000 10%,transparent 70%);mask:radial-gradient(ellipse 70% 60% at 50% 45%,#000 10%,transparent 70%)}
-.bg span{position:absolute;width:60vmax;aspect-ratio:1;border-radius:50%;opacity:var(--glow);animation:drift 24s ease-in-out infinite alternate}
-.bg span:nth-child(1){top:-30vmax;left:-20vmax;background:radial-gradient(closest-side,var(--accent),transparent)}
-.bg span:nth-child(2){right:-25vmax;bottom:-35vmax;background:radial-gradient(closest-side,var(--a2),transparent);animation-duration:30s;animation-direction:alternate-reverse}
-.bg span:nth-child(3){top:45%;left:55%;width:40vmax;background:radial-gradient(closest-side,var(--a3),transparent);animation-duration:36s}
-@keyframes drift{to{transform:translate(10vmax,6vmax) scale(1.15)}}
-main{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem 1.5rem;text-align:center;animation:rise .9s cubic-bezier(.2,.8,.2,1) both}
-@keyframes rise{from{opacity:0;transform:translateY(16px)}}
-.badge{display:inline-flex;align-items:center;gap:.6rem;margin:0 0 2rem;padding:.375rem .875rem .375rem .75rem;border:1px solid var(--line);border-radius:999px;background:var(--glass);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);color:var(--muted);font-size:.8125rem;font-weight:500;letter-spacing:.01em}
-.dot{position:relative;width:.5rem;height:.5rem;border-radius:50%;background:#f59e0b}
-.dot::after{content:"";position:absolute;inset:0;border-radius:inherit;background:inherit;animation:ping 2s cubic-bezier(0,0,.2,1) infinite}
-@keyframes ping{75%,to{transform:scale(2.6);opacity:0}}
-h1{margin:0;padding-bottom:.1em;background:linear-gradient(180deg,var(--fg) 35%,var(--fg-fade));-webkit-background-clip:text;background-clip:text;color:transparent;font-size:clamp(2.5rem,9.5vw,6.5rem);font-weight:700;line-height:1.05;letter-spacing:-.045em;overflow-wrap:anywhere}
-h1 span{background:linear-gradient(100deg,var(--accent),var(--a2));-webkit-background-clip:text;background-clip:text}
-.lead{max-width:32rem;margin:1.25rem 0 0;color:var(--muted);font-size:clamp(1.05rem,2.4vw,1.25rem);text-wrap:balance}
-.progress{position:relative;width:11rem;height:2px;margin-top:2.75rem;overflow:hidden;border-radius:2px;background:var(--line)}
-.progress::after{content:"";position:absolute;inset:0;width:40%;background:linear-gradient(90deg,transparent,var(--accent),var(--a2),transparent);animation:slide 2.2s ease-in-out infinite}
-@keyframes slide{from{transform:translateX(-100%)}to{transform:translateX(250%)}}
-.contact{margin-top:2.5rem;padding:.625rem 1.25rem;border:1px solid var(--line);border-radius:999px;background:var(--glass);color:var(--fg);font-size:.9375rem;font-weight:500;text-decoration:none;transition:border-color .2s,transform .2s}
-.contact:hover{border-color:var(--accent);transform:translateY(-1px)}
-.contact:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-footer{padding:1.5rem;color:var(--muted);font-size:.8125rem;text-align:center}
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+:root{--paper:#f2efe9;--ink:#1a1917;--muted:#6f6a62;--rule:rgb(26 25 23/.18);--display:ui-serif,"Iowan Old Style","Sitka Banner",Charter,Georgia,serif;--text:ui-serif,"Iowan Old Style","Sitka Text",Charter,Georgia,serif;--mono:ui-monospace,"SF Mono","Cascadia Mono","Segoe UI Mono",Menlo,Consolas,monospace;--pad:clamp(1.25rem,4vw,3rem);color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--paper:#151412;--ink:#ebe7df;--muted:#9a948a;--rule:rgb(235 231 223/.16);color-scheme:dark}}
+html{background:var(--paper);color:var(--ink)}
+body{margin:0;min-height:100vh;min-height:100svh;display:grid;grid-template-rows:auto 1fr auto;padding:0 var(--pad);font:1.125rem/1.5 var(--text);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+::selection{background:var(--accent);color:var(--paper)}
+header,footer{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.5rem 2rem;font:.75rem/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase}
+header{padding:var(--pad) 0 .875rem;border-bottom:1px solid var(--rule)}
+footer{padding:.875rem 0 var(--pad);border-top:1px solid var(--rule);color:var(--muted)}
+footer a{text-transform:none;letter-spacing:0}
+.status{display:inline-flex;align-items:center;gap:.625rem}
+.mark{width:.75rem;height:.75rem;border:1px solid var(--accent);background:repeating-linear-gradient(-45deg,var(--accent) 0 1px,transparent 1px 3px);animation:work 1.6s linear infinite}
+@keyframes work{to{background-position:4.243px 0}}
+main{display:grid;align-content:end;justify-items:start;padding:clamp(5rem,16vh,12rem) 0 clamp(2rem,7vh,4.5rem)}
+h1{margin:0;font:clamp(3.5rem,11vw + 1rem,11rem)/.95 var(--display);letter-spacing:-.025em;text-wrap:balance}
+h1 em{color:var(--accent)}
+main p{max-width:30ch;margin:1.75rem 0 0;color:var(--muted);font-size:clamp(1.125rem,1.6vw,1.375rem)}
+a{color:inherit;text-decoration-color:var(--accent);text-decoration-thickness:1px;text-underline-offset:.2em}
+a:hover{color:var(--accent)}
+@media (prefers-reduced-motion:reduce){.mark{animation:none}}
 `;
 
 export function renderPage(site: Site, nonce: string): string {
 	const name = escapeHtml(site.name);
-	const dot = site.name.indexOf(".");
-	const wordmark =
-		dot > 0 ? `${escapeHtml(site.name.slice(0, dot))}<wbr><span>${escapeHtml(site.name.slice(dot))}</span>` : name;
-	const contact = site.email
-		? `<a class="contact" href="mailto:${escapeHtml(site.email)}">${escapeHtml(site.email)}</a>`
-		: "";
+	const headline = escapeHtml(site.headline).replace(/\*(.+?)\*/g, "<em>$1</em>");
+	const contact = site.email ? `<a href="mailto:${escapeHtml(site.email)}">${escapeHtml(site.email)}</a>` : "";
 
 	return `<!doctype html>
 <html lang="${escapeHtml(site.lang)}">
@@ -48,30 +34,33 @@ export function renderPage(site: Site, nonce: string): string {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<meta name="color-scheme" content="dark light">
-<meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)">
-<meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)">
-<title>${name} · ${escapeHtml(site.badge)}</title>
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f2efe9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#151412" media="(prefers-color-scheme: dark)">
+<title>${name} – ${escapeHtml(site.status)}</title>
 <link rel="icon" href="${favicon(site)}">
 <style nonce="${nonce}">:root{--accent:${site.accent}}${CSS}</style>
 </head>
 <body>
-<div class="bg" aria-hidden="true"><span></span><span></span><span></span></div>
+<header>
+<span>${name}</span>
+<span class="status"><span class="mark" aria-hidden="true"></span>${escapeHtml(site.status)}</span>
+</header>
 <main>
-<p class="badge"><span class="dot"></span>${escapeHtml(site.badge)}</p>
-<h1>${wordmark}</h1>
-<p class="lead">${escapeHtml(site.message)}</p>
-<div class="progress" aria-hidden="true"></div>
-${contact}
+<h1>${headline}</h1>
+<p>${escapeHtml(site.message)}</p>
 </main>
-<footer>© ${new Date().getFullYear()} ${name}</footer>
+<footer>
+<span>© ${new Date().getFullYear()}</span>
+${contact}
+</footer>
 </body>
 </html>`;
 }
 
 function favicon(site: Site): string {
-	const letter = escapeHtml(site.name.charAt(0).toUpperCase());
-	const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="${site.accent}"/><text x="32" y="44" text-anchor="middle" font-family="system-ui,sans-serif" font-size="34" font-weight="700" fill="#fff">${letter}</text></svg>`;
+	const letter = escapeHtml(site.name.charAt(0));
+	const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" fill="${site.accent}"/><text x="32" y="48" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="48" fill="#f2efe9">${letter}</text></svg>`;
 	return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
 
