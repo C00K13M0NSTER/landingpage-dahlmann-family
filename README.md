@@ -1,16 +1,20 @@
 # landingpage-dahlmann-family
 
-Schlichte, typografische Wartungsseite für **dahlmann.family** – als generischer Cloudflare Worker, der beliebig viele Domains bedienen kann.
+Kleine Familien-Startseite für **dahlmann.family** (Stil wie dhlmnn.de) – als generischer Cloudflare Worker, der beliebig viele Domains bedienen kann.
 
-- Ein Worker, mehrere Domains: Die Seite wird anhand des Hostnamens gerendert. Ohne weitere Konfiguration steht oben einfach der Domainname.
-- Nur Systemschriften (Serif + Mono), keine externen Ressourcen (keine Webfonts, Skripte oder Tracker).
-- Dark/Light Mode, responsive, respektiert `prefers-reduced-motion`.
-- `www.` leitet per 301 auf die Hauptdomain um.
+- Ein Worker, mehrere Domains: Inhalt pro Hostname aus [src/sites.ts](src/sites.ts). Domains ohne Eintrag zeigen nur ihren Namen.
+- Inter wird selbst ausgeliefert, keine externen Ressourcen (keine Skripte, Tracker oder CDNs).
+- `/` antwortet mit 200, unbekannte Pfade mit echtem 404. `www.` leitet per 301 auf die Hauptdomain um.
+
+## Warum echter Inhalt (Palo Alto & Co.)
+
+URL-Filter wie Palo Alto (PAN-DB) stufen Seiten ohne Inhalt als **Insufficient Content** und Platzhalter/geparkte Domains als **Parked** ein. Beide Kategorien werden in Firmennetzen üblicherweise blockiert. Deshalb zeigt die Seite ein paar echte Sätze statt „Wartung“ oder „Domain geparkt“ – Ziel ist die Kategorie **Personal Sites and Blogs**.
+
+Nach dem Deploy unter [Test A Site](https://urlfiltering.paloaltonetworks.com/) prüfen und bei Bedarf eine Neukategorisierung beantragen. Bei *Insufficient Content* geht kein Antrag; die Kategorie wird beim nächsten Crawl automatisch neu bewertet.
 
 ## Nicht in Suchmaschinen
 
 - Jede Antwort sendet `X-Robots-Tag: noindex, nofollow, …`, das HTML zusätzlich `<meta name="robots" content="noindex, nofollow">`.
-- Die Seite antwortet mit `503 Service Unavailable` + `Retry-After` (Wartungsmodus). Solche Seiten werden nicht indexiert.
 - Die `robots.txt` erlaubt das Crawlen **bewusst**: Suchmaschinen befolgen `noindex` nur, wenn sie die Seite abrufen dürfen. Mit `Disallow: /` könnten verlinkte URLs trotzdem (ohne Inhalt) im Index landen.
 
 ## Neue Domain hinzufügen
@@ -25,9 +29,15 @@ Schlichte, typografische Wartungsseite für **dahlmann.family** – als generisc
    ```jsonc
    { "pattern": "example.com/*", "zone_name": "example.com" }
    ```
-3. Optional Status, Überschrift (`*kursiv*` möglich), Text, Sprache, Akzentfarbe oder Kontakt-E-Mail in [src/sites.ts](src/sites.ts) überschreiben:
+3. Inhalt in [src/sites.ts](src/sites.ts) eintragen (Überschrift, Untertitel, Einleitung, Karten, Inhaber, optional E-Mail):
    ```ts
-   "example.com": { status: "Maintenance", headline: "Something new is *coming.*", message: "Check back soon.", lang: "en" },
+   "example.com": {
+   	title: "Familie Beispiel.",
+   	subtitle: "Unser Zuhause im Netz.",
+   	intro: "Ein paar echte Sätze darüber, wofür die Domain genutzt wird.",
+   	cards: [{ icon: "mail", title: "E-Mail", text: "…" }],
+   	owner: "Familie Beispiel",
+   },
    ```
 4. Push auf `main`. Für Custom Domains legt Cloudflare DNS-Einträge und Zertifikate selbst an.
 

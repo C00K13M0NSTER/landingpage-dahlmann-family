@@ -4,6 +4,7 @@
 	"name": "landingpage-dahlmann-family",
 	"main": "src/index.ts",
 	"compatibility_date": "2026-11-19",
+	"rules": [{ "type": "Data", "globs": ["**/*.woff2"], "fallthrough": true }],
 	// Every domain listed here is served by this Worker (www.* redirects to the apex domain).
 	// custom_domain requires a hostname without A/AAAA/CNAME record; hostnames with an existing proxied record use a route.
 	"routes": [

@@ -1,4 +1,5 @@
-import { renderPage } from "./page";
+import inter from "./fonts/inter-latin.woff2";
+import { FONT_PATH, renderPage } from "./page";
 import { resolveSite } from "./sites";
 
 // Crawling stays allowed on purpose: search engines only drop pages they can fetch and see "noindex" on.
@@ -30,16 +31,23 @@ export default {
 			return respond(ROBOTS_TXT, 200, { "Content-Type": "text/plain; charset=utf-8" });
 		}
 
+		if (url.pathname === FONT_PATH) {
+			return respond(inter, 200, { "Content-Type": "font/woff2", "Cache-Control": "public, max-age=31536000, immutable" });
+		}
+
+		// Real 404s instead of answering every path: catch-all pages are typical for parked domains.
+		if (url.pathname !== "/") {
+			return respond("Not Found", 404, { "Content-Type": "text/plain; charset=utf-8" });
+		}
+
 		const nonce = crypto.randomUUID();
-		// 503 marks the page as temporarily unavailable, an additional signal against indexing.
-		return respond(renderPage(resolveSite(url.hostname), nonce), 503, {
+		return respond(renderPage(resolveSite(url.hostname), nonce), 200, {
 			"Content-Type": "text/html; charset=utf-8",
-			"Content-Security-Policy": `default-src 'none'; style-src 'nonce-${nonce}'; img-src data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none'`,
-			"Retry-After": "86400",
+			"Content-Security-Policy": `default-src 'none'; style-src 'nonce-${nonce}'; font-src 'self'; img-src data:; base-uri 'none'; form-action 'none'; frame-ancestors 'none'`,
 		});
 	},
 } satisfies ExportedHandler;
 
-function respond(body: string | null, status: number, headers: Record<string, string>): Response {
+function respond(body: BodyInit | null, status: number, headers: Record<string, string>): Response {
 	return new Response(body, { status, headers: { ...BASE_HEADERS, ...headers } });
 }
