@@ -35,11 +35,6 @@ export default {
 			return respond(inter, 200, { "Content-Type": "font/woff2", "Cache-Control": "public, max-age=31536000, immutable" });
 		}
 
-		// Real 404s instead of answering every path: catch-all pages are typical for parked domains.
-		if (url.pathname !== "/") {
-			return respond("Not Found", 404, { "Content-Type": "text/plain; charset=utf-8" });
-		}
-
 		const nonce = crypto.randomUUID();
 		return respond(renderPage(resolveSite(url.hostname), nonce), 200, {
 			"Content-Type": "text/html; charset=utf-8",

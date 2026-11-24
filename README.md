@@ -1,16 +1,12 @@
 # landingpage-dahlmann-family
 
-Kleine Familien-Startseite für **dahlmann.family** (Stil wie dhlmnn.de) – als generischer Cloudflare Worker, der beliebig viele Domains bedienen kann.
+Schlichte Parkseite für **dahlmann.family** (Stil wie dhlmnn.de) – als generischer Cloudflare Worker, der beliebig viele Domains bedienen kann.
 
-- Ein Worker, mehrere Domains: Inhalt pro Hostname aus [src/sites.ts](src/sites.ts). Domains ohne Eintrag zeigen nur ihren Namen.
+- Ein Worker, mehrere Domains: Jede Domain zeigt ihren Hostnamen und „Diese Domain ist geparkt.“ – ohne weitere Konfiguration.
 - Inter wird selbst ausgeliefert, keine externen Ressourcen (keine Skripte, Tracker oder CDNs).
-- `/` antwortet mit 200, unbekannte Pfade mit echtem 404. `www.` leitet per 301 auf die Hauptdomain um.
+- `www.` leitet per 301 auf die Hauptdomain um.
 
-## Warum echter Inhalt (Palo Alto & Co.)
-
-URL-Filter wie Palo Alto (PAN-DB) stufen Seiten ohne Inhalt als **Insufficient Content** und Platzhalter/geparkte Domains als **Parked** ein. Beide Kategorien werden in Firmennetzen üblicherweise blockiert. Deshalb zeigt die Seite ein paar echte Sätze statt „Wartung“ oder „Domain geparkt“ – Ziel ist die Kategorie **Personal Sites and Blogs**.
-
-Nach dem Deploy unter [Test A Site](https://urlfiltering.paloaltonetworks.com/) prüfen und bei Bedarf eine Neukategorisierung beantragen. Bei *Insufficient Content* geht kein Antrag; die Kategorie wird beim nächsten Crawl automatisch neu bewertet.
+Hinweis: URL-Filter wie Palo Alto ordnen solche Seiten der Kategorie **Parked** zu.
 
 ## Nicht in Suchmaschinen
 
@@ -29,15 +25,9 @@ Nach dem Deploy unter [Test A Site](https://urlfiltering.paloaltonetworks.com/) 
    ```jsonc
    { "pattern": "example.com/*", "zone_name": "example.com" }
    ```
-3. Inhalt in [src/sites.ts](src/sites.ts) eintragen (Überschrift, Untertitel, Einleitung, Karten, Inhaber, optional E-Mail):
+3. Optional Text oder Sprache in [src/sites.ts](src/sites.ts) überschreiben:
    ```ts
-   "example.com": {
-   	title: "Familie Beispiel.",
-   	subtitle: "Unser Zuhause im Netz.",
-   	intro: "Ein paar echte Sätze darüber, wofür die Domain genutzt wird.",
-   	cards: [{ icon: "mail", title: "E-Mail", text: "…" }],
-   	owner: "Familie Beispiel",
-   },
+   "example.com": { message: "This domain is parked.", lang: "en" },
    ```
 4. Push auf `main`. Für Custom Domains legt Cloudflare DNS-Einträge und Zertifikate selbst an.
 
